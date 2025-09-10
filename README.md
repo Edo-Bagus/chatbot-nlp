@@ -53,10 +53,8 @@ Scan QR tersebut menggunakan aplikasi WhatsApp di ponsel Anda untuk memulai sesi
 
 ## Demo (Contoh Alur)
 
-### GIF / Tangkapan Layar
-Berikut adalah contoh alur integrasi WhatsApp (QR scan hingga chatbot aktif):
+[![Tonton Video](https://img.youtube.com/vi/LlrnkzaA_rk/0.jpg)](https://www.youtube.com/watch?v=LlrnkzaA_rk)
 
-![demo WhatsApp QR scan](docs/demo-whatsapp-qr.gif)
 
 ## Testing
 
@@ -67,5 +65,5 @@ npm test
 ```
 
 ## Source Data
-- Data prodi universitas: 
+- Data prodi universitas: https://sidatagrun-public-1076756628210.asia-southeast2.run.app/ptn_sb.php
 - Data ranking universitas: https://www.kaggle.com/datasets/khotijahs1/2020-indonesian-university-ranking

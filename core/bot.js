@@ -91,7 +91,9 @@ function getReviewResponse(state) {
   const hasGrades = Object.keys(grades).length > 0;
 
   if (!hasInterests && !hasKlaster && !hasProdi && !hasLocation && !hasGrades) {
-    return `Halo, saya *MarBot*, asisten yang akan membantumu menemukan program studi ideal. Mari kita mulai!`;
+    return `👋 Halo! Aku *MarBot* 🤖, asisten cerdasmu yang akan membantumu menemukan program studi yang paling cocok 🎓✨.
+Yuk, mulai perjalananmu menuju pilihan yang tepat! 🌟
+Untuk memulai, boleh tahu minat atau hobi apa yang kamu miliki? 🎨⚽📚`;
   }
 
   const gradeList = Object.keys(grades)
