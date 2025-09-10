@@ -1,4 +1,4 @@
-const { loadCSV, getClusterFromGrades, getRecommendations } = require("../../services/datasource");
+const { loadCSV, getClusterFromGrades, getRecommendations, mapInterestsToCategories  } = require("../services/datasource");
 
 beforeAll(async () => {
   // Load dataset sekali sebelum semua test jalan
@@ -94,5 +94,33 @@ describe("getRecommendations()", () => {
 
     expect(result).toMatch(/universitas berikut cocok untuk anda/i);
     expect(result.toLowerCase()).toMatch(/aceh|sumatera utara/);
+  });
+});
+
+describe("mapInterestsToCategories()", () => {
+  test("Jika input kosong → return []", () => {
+    expect(mapInterestsToCategories([])).toEqual([]);
+    expect(mapInterestsToCategories(null)).toEqual([]);
+  });
+
+  test("Mapping minat tunggal ke kategori", () => {
+    expect(mapInterestsToCategories(["menyanyi"])).toEqual(["Seni Pertunjukan"]);
+    expect(mapInterestsToCategories(["coding"])).toEqual(["Teknologi dan Komputer"]);
+  });
+
+  test("Mapping multiple minat ke kategori berbeda", () => {
+    const result = mapInterestsToCategories(["menyanyi", "coding"]);
+    expect(result).toContain("Seni Pertunjukan");
+    expect(result).toContain("Teknologi dan Komputer");
+    expect(result.length).toBe(2);
+  });
+
+  test("Case-insensitive mapping", () => {
+    expect(mapInterestsToCategories(["MeNyAnYi"])).toEqual(["Seni Pertunjukan"]);
+    expect(mapInterestsToCategories(["CODING"])).toEqual(["Teknologi dan Komputer"]);
+  });
+
+  test("Minat tidak ada di mapping → diabaikan", () => {
+    expect(mapInterestsToCategories(["jalan-jalan", "belanja"])).toEqual([]);
   });
 });

@@ -1,15 +1,9 @@
 // wa-client.js
-const { Client, LocalAuth } = require('whatsapp-web.js');
+const { Client } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
-const { loadCSV, getAllUniqueProdi } = require('../services/datasource'); // Mengimpor loadCSV dari datasource
-const { handleInput } = require('./bot'); // Mengimpor handleInput dari file bot.js
 const bot = require('./bot');
 
-const client = new Client({
-    // authStrategy: new LocalAuth()
-});
-
-let DATABASE_PRODI = [];
+const client = new Client();
 
 client.on('qr', (qr) => {
     qrcode.generate(qr, { small: true });
@@ -24,24 +18,26 @@ client.on('message', async (msg) => {
     // Abaikan pesan dari grup atau pesan status
     if (msg.isGroupMsg || msg.from === 'status@broadcast') return;
 
-    const userInput = msg.body;
-    const botResponse = bot.handleInput(userInput);
+    const userInput = msg.body?.trim();
+  if (!userInput) return; // kalau kosong, abaikan
 
-    msg.reply(botResponse);
+  try {
+    const botResponse = await bot.handleInput(userInput);
+
+    if (typeof botResponse === "string" && botResponse.trim().length > 0) {
+      await msg.reply(botResponse);
+    } else {
+      await msg.reply("⚠️ Maaf, saya tidak bisa memproses pesanmu.");
+    }
+  } catch (err) {
+    console.error("❌ Error bot:", err);
+    await msg.reply("Terjadi error saat memproses pesanmu.");
+  }
 });
 
-async function initializeBot() {
-    try {
-        console.log("Memuat data CSV...");
-        await loadCSV("data/cleaned/cleaned_data.csv");
-        console.log("Data CSV berhasil dimuat!\n");
-        // Mengisi DATABASE_PRODI setelah data siap
-        DATABASE_PRODI.push(...getAllUniqueProdi());
-        
-        client.initialize();
-    } catch (error) {
-        console.error("Terjadi error saat memuat data:", error.message);
-    }
+async function start() {
+  await bot.initBot();
+  client.initialize();
 }
 
-initializeBot();
+start();

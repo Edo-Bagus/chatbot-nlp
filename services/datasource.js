@@ -18,6 +18,87 @@ function loadCSV(path = "hasil_sidatag.csv") {
   });
 }
 
+// Mapping minat ke kategori
+const interestMapping = {
+  "Seni Rupa": [
+    "desain", "menggambar", "melukis", "membatik", "patung",
+    "fotografi", "grafis", "kaligrafi", "animasi", "ilustrasi",
+    "arsitektur interior"
+  ],
+  "Seni Pertunjukan": [
+    "musik", "menyanyi", "bermain gitar", "bermain piano",
+    "bermain drum", "teater", "drama", "menari", "seni suara",
+    "komedi", "puisi"
+  ],
+  "Olahraga": [
+    "sepakbola", "futsal", "bola basket", "voli", "badminton",
+    "renang", "lari", "atletik", "panahan", "silat", "taekwondo",
+    "yoga", "bersepeda", "mendaki gunung", "gym", "workout"
+  ],
+  "Sains dan Alam": [
+    "biologi", "astronomi", "fisika", "kimia", "lingkungan",
+    "geologi", "pertanian", "peternakan", "meneliti hewan",
+    "meneliti tumbuhan", "eksperimen laboratorium"
+  ],
+  "Teknologi dan Komputer": [
+    "programming", "coding", "hacking etis", "robotik",
+    "artificial intelligence", "iot", "otomasi", "game development",
+    "web development", "app development", "hardware",
+    "jaringan komputer", "cyber security", "3d printing"
+  ],
+  "Ekonomi dan Bisnis": [
+    "ekonomi", "bisnis", "wirausaha", "marketing", "manajemen",
+    "akuntansi", "investasi", "saham", "perdagangan", "koperasi",
+    "keuangan", "startup"
+  ],
+  "Kesehatan dan Sosial": [
+    "kesehatan", "dokter", "perawat", "farmasi", "psikologi",
+    "konseling", "sosial", "menolong orang", "kerelawanan",
+    "pelayanan masyarakat", "kesejahteraan sosial", "gizi"
+  ],
+  "Bahasa dan Sastra": [
+    "membaca", "menulis", "sastra", "menulis cerita", "jurnalistik",
+    "menulis artikel", "penerjemahan", "belajar bahasa asing",
+    "puisi", "menulis novel"
+  ],
+  "Hukum dan Politik": [
+    "hukum", "politik", "debat", "diskusi", "advokasi", "organisasi",
+    "kepemimpinan", "hak asasi manusia", "administrasi publik",
+    "diplomasi"
+  ],
+  "Ilmu Sosial": [
+    "sosiologi", "antropologi", "budaya", "sejarah", "geografi sosial",
+    "komunikasi", "media", "fotografi jurnalistik", "hubungan masyarakat"
+  ],
+  "Keterampilan Praktis": [
+    "memasak", "membuat kue", "otomotif", "teknik mesin", "elektronika",
+    "pertukangan", "menjahit", "merakit komputer", "mekanik",
+    "perbengkelan", "kerajinan tangan", "diy"
+  ]
+};
+
+/**
+ * Mapping minat user ke kategori besar
+ * @param {String[]} userInterests daftar minat user (contoh: ["menyanyi", "coding"])
+ * @returns {String[]} daftar kategori unik (contoh: ["Seni Pertunjukan", "Teknologi dan Komputer"])
+ */
+function mapInterestsToCategories(userInterests) {
+  if (!userInterests || userInterests.length === 0) return [];
+
+  const categories = new Set();
+
+  userInterests.forEach((interest) => {
+    const lower = interest.toLowerCase();
+    for (const [category, keywords] of Object.entries(interestMapping)) {
+      if (keywords.some((k) => k.toLowerCase() === lower)) {
+        categories.add(category);
+      }
+    }
+  });
+
+  return Array.from(categories);
+}
+
 /**
  * Ambil semua unique Nama Prodi
  * @returns {String[]} daftar nama prodi unik
@@ -124,8 +205,16 @@ function applyFilters(data, user_state) {
 }
 
 function getRecommendations(user_state) {
-  if (!csvData.length) {
-    throw new Error("CSV belum dimuat. Panggil loadCSV() dulu.");
+    if (!csvData.length) {
+        throw new Error("CSV belum dimuat. Panggil loadCSV() dulu.");
+    }
+
+  // 🔹 mapping minat user ke kategori besar
+  if (user_state.interests?.length > 0) {
+    user_state = {
+      ...user_state,
+      interests: mapInterestsToCategories(user_state.interests),
+    };
   }
 
   let filtered = applyFilters(csvData, user_state);
@@ -162,4 +251,4 @@ function getRecommendations(user_state) {
 }
 
 
-module.exports = { loadCSV, getAllUniqueProdi, getClusterFromGrades, getRecommendations };
+module.exports = { loadCSV, getAllUniqueProdi, getClusterFromGrades, getRecommendations, mapInterestsToCategories };
