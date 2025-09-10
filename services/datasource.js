@@ -87,20 +87,10 @@ function getClusterFromGrades(grades) {
 
 
 
-/**
- * Fungsi rekomendasi universitas/prodi
- * @param {Object} user_state - { interests: [], klaster: string|null, chosenProdi: [], location: [] }
- * @returns {String} rekomendasi
- */
-function getRecommendations(user_state) {
-  if (!csvData.length) {
-    throw new Error("CSV belum dimuat. Panggil loadCSV() dulu.");
-  }
+function applyFilters(data, user_state) {
+  let filtered = [...data];
 
-  let filtered = [...csvData];
-
-  // 1. Filter berdasarkan chosenProdi (union)
-  if (user_state.chosenProdi && user_state.chosenProdi.length > 0) {
+  if (user_state.chosenProdi?.length > 0) {
     filtered = filtered.filter((row) =>
       user_state.chosenProdi.some((prodi) =>
         row["Nama Prodi"]?.toLowerCase().includes(prodi.toLowerCase())
@@ -108,8 +98,7 @@ function getRecommendations(user_state) {
     );
   }
 
-  // 2. Filter berdasarkan location (union)
-  if (user_state.location && user_state.location.length > 0) {
+  if (user_state.location?.length > 0) {
     filtered = filtered.filter((row) =>
       user_state.location.some((loc) =>
         row["Provinsi"]?.toLowerCase().includes(loc.toLowerCase())
@@ -117,8 +106,7 @@ function getRecommendations(user_state) {
     );
   }
 
-  // 3. Filter berdasarkan interests (union)
-  if (user_state.interests && user_state.interests.length > 0) {
+  if (user_state.interests?.length > 0) {
     filtered = filtered.filter((row) =>
       user_state.interests.some((interest) =>
         row["Minat"]?.toLowerCase().includes(interest.toLowerCase())
@@ -126,50 +114,52 @@ function getRecommendations(user_state) {
     );
   }
 
-  // 4. Filter berdasarkan klaster (jika ada)
   if (user_state.klaster) {
     filtered = filtered.filter((row) =>
       row["Klaster"]?.toLowerCase().includes(user_state.klaster.toLowerCase())
     );
   }
 
-  // 5. Jika setelah filter kosong → fallback ke full data
-  if (filtered.length === 0) {
-    filtered = [...csvData];
+  return filtered;
+}
+
+function getRecommendations(user_state) {
+  if (!csvData.length) {
+    throw new Error("CSV belum dimuat. Panggil loadCSV() dulu.");
   }
 
-  // 6. Sortir berdasarkan Rank (jika ada)
-  filtered.sort((a, b) => {
-    const rankA = parseInt(a["Rank"] || 9999);
-    const rankB = parseInt(b["Rank"] || 9999);
-    return rankA - rankB;
-  });
+  let filtered = applyFilters(csvData, user_state);
+
+  // fallback bertahap
+  if (filtered.length === 0) {
+    const relaxedStates = [
+      { ...user_state, interests: [] },
+      { ...user_state, chosenProdi: [] },
+      { ...user_state, location: [] },
+      { ...user_state, klaster: null }
+    ];
+
+    for (const relaxed of relaxedStates) {
+      filtered = applyFilters(csvData, relaxed);
+      if (filtered.length > 0) break;
+    }
+  }
+
+  // sort by rank
+  filtered.sort((a, b) => (parseInt(a["Rank"] || 9999)) - (parseInt(b["Rank"] || 9999)));
 
   const top5 = filtered.slice(0, 5);
 
-  let rekomendasi = "";
-
-  if (
-    (!user_state.chosenProdi || user_state.chosenProdi.length === 0) &&
-    (!user_state.location || user_state.location.length === 0)
-  ) {
-    // Mode prodi saja
-    const prodiList = top5.map((row, i) => `${i + 1}. ${row["Nama Prodi"]}`);
-    rekomendasi = `Menurut saya, prodi berikut cocok untuk anda:\n${prodiList.join(
-      "\n"
-    )}`;
+  if ((!user_state.chosenProdi?.length) && (!user_state.location?.length)) {
+    return `Menurut saya, prodi berikut cocok untuk anda:\n` +
+      top5.map((row, i) => `${i + 1}. ${row["Nama Prodi"]}`).join("\n");
   } else {
-    // Mode universitas + prodi
-    const univList = top5.map(
-      (row, i) =>
+    return `Menurut saya, universitas berikut cocok untuk anda:\n` +
+      top5.map((row, i) =>
         `${i + 1}. ${row["Nama Universitas"]} - ${row["Nama Prodi"]} (${row["Provinsi"]})`
-    );
-    rekomendasi = `Menurut saya, universitas berikut cocok untuk anda:\n${univList.join(
-      "\n"
-    )}`;
+      ).join("\n");
   }
-
-  return rekomendasi;
 }
+
 
 module.exports = { loadCSV, getAllUniqueProdi, getClusterFromGrades, getRecommendations };
