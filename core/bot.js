@@ -1,3 +1,5 @@
+const { getRandomReply } = require("../services/datasource");
+
 // --- Reflections: mapping kata ganti
 const reflections = {
   "aku": "kamu",
@@ -32,6 +34,10 @@ const rules = [
   {
     pattern: /bye/i,
     response: () => "Sampai jumpa! 👋"
+  },
+  {
+    pattern: /test/i,
+    response: () => getRandomReply("Nama Prodi")
   }
 ];
 

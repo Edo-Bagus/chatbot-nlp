@@ -1,7 +1,8 @@
 const { Client } = require("whatsapp-web.js");
 const qrcode = require("qrcode-terminal");
 const { rules } = require("./bot");
-const { logMessage } = require("./utils/logger");
+const { logMessage } = require("../utils/logger");
+const { loadCSV } = require("../services/datasource");
 
 const client = new Client();
 
@@ -46,5 +47,5 @@ client.on("message", msg => {
   }
 });
 
-
+loadCSV();
 client.initialize();
