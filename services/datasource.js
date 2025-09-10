@@ -19,6 +19,25 @@ function loadCSV(path = "hasil_sidatag.csv") {
 }
 
 /**
+ * Ambil semua unique Nama Prodi
+ * @returns {String[]} daftar nama prodi unik
+ */
+function getAllUniqueProdi() {
+  if (!csvData.length) {
+    throw new Error("CSV belum dimuat. Panggil loadCSV() dulu.");
+  }
+
+  const uniqueSet = new Set();
+  csvData.forEach((row) => {
+    if (row["Nama Prodi"]) {
+      uniqueSet.add(row["Nama Prodi"].trim());
+    }
+  });
+
+  return Array.from(uniqueSet).sort(); // optional: diurutkan alfabetis
+}
+
+/**
  * Ubah nilai rapor jadi klaster dominan
  * @param {Object} grades - { matematika: 80, fisika: 75, ... }
  * @returns {String} klaster ("sains teknologi", "agrokompleks", "medika", "sosial humaniora")
@@ -153,4 +172,4 @@ function getRecommendations(user_state) {
   return rekomendasi;
 }
 
-module.exports = { loadCSV, getClusterFromGrades, getRecommendations };
+module.exports = { loadCSV, getAllUniqueProdi, getClusterFromGrades, getRecommendations };
