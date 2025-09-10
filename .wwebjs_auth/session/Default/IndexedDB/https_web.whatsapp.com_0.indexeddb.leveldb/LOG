@@ -1,0 +1,22 @@
+2025/09/10-17:19:16.237 4964 Reusing MANIFEST D:\UGM\Kuliah\SEMESTER 7\PEMROSESAN BAHASA ALAMI\chatbot-nlp\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/09/10-17:19:16.237 4964 Recovering log #53
+2025/09/10-17:19:16.313 4964 Reusing old log D:\UGM\Kuliah\SEMESTER 7\PEMROSESAN BAHASA ALAMI\chatbot-nlp\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000053.log 
+2025/09/10-17:19:17.723 6eb0 Level-0 table #58: started
+2025/09/10-17:19:17.743 6eb0 Level-0 table #58: 1078170 bytes OK
+2025/09/10-17:19:17.744 6eb0 Delete type=0 #53
+2025/09/10-17:19:17.744 3624 Manual compaction at level-0 from '\x00\x1c\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x1d\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/09/10-17:19:17.756 1b30 Level-0 table #60: started
+2025/09/10-17:19:17.778 1b30 Level-0 table #60: 249 bytes OK
+2025/09/10-17:19:17.779 1b30 Delete type=0 #57
+2025/09/10-17:19:17.779 1b30 Manual compaction at level-0 from '\x00\x1d\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x1e\x00\x00\x00' @ 0 : 0; will stop at '\x00\x1d\x00\x00\x05' @ 164753 : 0
+2025/09/10-17:19:17.779 1b30 Compacting 1@0 + 1@1 files
+2025/09/10-17:19:17.808 1b30 Generated table #61@0: 16581 keys, 367410 bytes
+2025/09/10-17:19:17.808 1b30 Compacted 1@0 + 1@1 files => 367410 bytes
+2025/09/10-17:19:17.808 1b30 compacted to: files[ 0 1 1 0 0 0 0 ]
+2025/09/10-17:19:17.809 1b30 Delete type=2 #60
+2025/09/10-17:19:17.809 1b30 Manual compaction at level-0 from '\x00\x1d\x00\x00\x05' @ 164753 : 0 .. '\x00\x1e\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/09/10-17:19:18.892 1d9c Compacting 1@1 + 1@2 files
+2025/09/10-17:19:18.925 1d9c Generated table #62@1: 36978 keys, 1516083 bytes
+2025/09/10-17:19:18.925 1d9c Compacted 1@1 + 1@2 files => 1516083 bytes
+2025/09/10-17:19:18.925 1d9c compacted to: files[ 0 0 1 0 0 0 0 ]
+2025/09/10-17:19:18.925 1d9c Delete type=2 #58
